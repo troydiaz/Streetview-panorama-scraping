@@ -1,0 +1,19 @@
+## IMAGE DOWNLOAD SETTINGS
+
+# Center of area to search for panoramas
+center: [50.7734, 14.2080]
+# Radius in kilometres
+radius: 3
+# How many dummy points are searched, lower makes it faster, but some panoramas will be missed
+resolution: 500
+
+## IMAGE PROJECTION SETTINGS
+
+# Resolution of the projected image. e.g. resolution of 1024 will give 1024x1024 image
+projected_resolution: 1024
+# Which sides to keep for the panoramas
+sides:
+  front: true
+  back: true
+  left: true
+  right: true

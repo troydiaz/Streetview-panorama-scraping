@@ -2,7 +2,7 @@ import asyncio
 import json
 import os
 import traceback
-
+import glob
 import aiohttp
 
 import streetview
@@ -75,13 +75,24 @@ async def download_loop(panoids, pmax):
 if __name__ == "__main__":
 
     # Load panoids info
-    with open('panoids 89261.json', 'r') as f:
+    if not glob.glob('panoids*.json'):
+        print('No panoids file found')
+        exit()
+    elif len(glob.glob('panoids*.json')) > 1:
+        print('Multiple panoids files found. Please remove files not needed')
+        exit()
+
+    with open(glob.glob('panoids*.json')[0], 'r') as f:
         panoids = json.load(f)
 
     print(f"Loaded {len(panoids)} panoids")
 
     # Download panorama in batches of 100
     loop = asyncio.get_event_loop()
-    for i in range(1, 100):
+    i = 0
+    while True:
+        i += 1
         print(f'Running the next batch: {(i-1)*100+1} → {i*100}')
         loop.run_until_complete(download_loop(panoids, 100 * i))
+        if 100 * i > len(panoids):
+            break

@@ -5,7 +5,8 @@ import itertools
 import traceback
 import webbrowser
 from pprint import pprint
-
+import os
+import yaml
 import aiohttp
 import folium
 
@@ -21,6 +22,8 @@ async def get_panoid(lat, lon, session):
             text = await resp.text()
             panoids = streetview.panoids_from_response(text)
             all_panoids.extend(panoids)
+            os.system('cls')
+            print(f'Panoid Count: {len(all_panoids)}')
     except:
         print('timeout')
         await asyncio.sleep(10)
@@ -60,11 +63,12 @@ if __name__ == "__main__":
     file = 'Result.html'
     zoom_start = 12
 
-    ### CONFIGURATION
-    center = (50.7734, 14.2080) # Center of area
-    radius = 3 # Radius in kilometres
-    resolution = 500 # How many dummy points are searched, lower makes it faster, but some panoramas will be missed
-
+    ## Read configuration from yaml file
+    with open('config.yaml') as f:
+        config = yaml.safe_load(f)
+        center = config['center']
+        radius = config['radius']
+        resolution = config['resolution']
 
     top_left = (center[0]-radius/70, center[1]+radius/70)
     bottom_right = (center[0]+radius/70, center[1]-radius/70)
