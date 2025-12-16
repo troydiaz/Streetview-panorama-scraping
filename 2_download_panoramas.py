@@ -88,7 +88,9 @@ if __name__ == "__main__":
     print(f"Loaded {len(panoids)} panoids")
 
     # Download panorama in batches of 100
-    loop = asyncio.get_event_loop()
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+
     i = 0
     while True:
         i += 1
@@ -96,3 +98,5 @@ if __name__ == "__main__":
         loop.run_until_complete(download_loop(panoids, 100 * i))
         if 100 * i > len(panoids):
             break
+
+    loop.close()

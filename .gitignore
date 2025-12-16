@@ -5,3 +5,5 @@ Result.html
 panoramas/
 tiles/
 cube_pano/
+get-pip.py
+RoadCenterlines_GeneratePointsAlongLines_TableToExcel.csv

@@ -5,7 +5,7 @@ center: [50.7734, 14.2080]
 # Radius in kilometres
 radius: 3
 # How many dummy points are searched, lower makes it faster, but some panoramas will be missed
-resolution: 500
+resolution: 50
 
 ## IMAGE PROJECTION SETTINGS
 

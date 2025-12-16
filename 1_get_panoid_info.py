@@ -96,8 +96,11 @@ if __name__ == "__main__":
 
     # Run asynchronous loop to get data about panos
     all_panoids = list()
-    loop = asyncio.get_event_loop()
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
     loop.run_until_complete(request_loop())
+    loop.close()
+
 
     # Filter out duplicates
     print(f'Pre-filtering: {len(all_panoids)} panoramas')
