@@ -9,6 +9,8 @@ import os
 import yaml
 import aiohttp
 import folium
+import csv
+from pathlib import Path
 
 import streetview
 
@@ -86,10 +88,47 @@ if __name__ == "__main__":
     folium.Circle(location=center, radius=radius*1000, color='#FF000099', fill='True').add_to(M)
 
     # Get testing points
-    test_points = list(itertools.product(range(resolution+1), range(resolution+1)))
-    test_points = [(bottom_right[0] + x*lat_diff/resolution, bottom_right[1] + y*lon_diff/resolution) for (x,y) in test_points]
-    test_points = [p for p in test_points if distance(p, center) <= radius]
-    
+    # Get testing points
+    csv_path = config.get("csv_points")
+
+    if csv_path and Path(csv_path).is_file():
+        # Read (lat, lon) points from CSV columns: latitude / longitude
+        pts = []
+        with open(csv_path, newline="", encoding="utf-8-sig") as fcsv:
+            reader = csv.DictReader(fcsv)
+            fields = {h.lower(): h for h in (reader.fieldnames or [])}
+            lat_col = fields.get("latitude")
+            lon_col = fields.get("longitude")
+            if not lat_col or not lon_col:
+                raise ValueError("CSV must have 'latitude' and 'longitude' columns")
+
+            for row in reader:
+                try:
+                    lat = float(row[lat_col])
+                    lon = float(row[lon_col])
+                except Exception:
+                    continue
+                pts.append((lat, lon))
+
+        # de-dupe (rounding avoids tiny float differences)
+        seen = set()
+        test_points = []
+        for lat, lon in pts:
+            key = (round(lat, 6), round(lon, 6))
+            if key in seen:
+                continue
+            seen.add(key)
+            test_points.append((lat, lon))
+
+        # set map center nicely
+        center = [sum(p[0] for p in test_points) / len(test_points),
+                sum(p[1] for p in test_points) / len(test_points)]
+
+    else:
+        test_points = list(itertools.product(range(resolution+1), range(resolution+1)))
+        test_points = [(bottom_right[0] + x*lat_diff/resolution, bottom_right[1] + y*lon_diff/resolution) for (x,y) in test_points]
+        test_points = [p for p in test_points if distance(p, center) <= radius]
+
     ### Show test points
     # for point in test_points:
     #     folium.Circle(location=point, radius=1, color='red').add_to(M)
