@@ -1,6 +1,7 @@
-## IMAGE DOWNLOAD SETTINGS
+﻿## IMAGE DOWNLOAD SETTINGS
 
 csv_points: RoadCenterlines_GeneratePointsAlongLines_20ft_TableToExcel.csv
+search_radius_m: 6
 
 # Center of area to search for panoramas
 center: [50.7734, 14.2080]

@@ -35,7 +35,7 @@ python -m venv venv
 .\venv\Scripts\python.exe -m pip install --upgrade pip
 .\venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
-3. Change csv_points to the name of the csv you saved from prereqs in `config.yaml`.
+3. Change csv_points to the name of the csv you saved from prereqs in `config.yaml`. Update `search_radius_m` to be the desired search radius in meters.
 4. Run the pipeline. Below is a dry run, downloads panoid info → filters year → downloads → projects → deletes panos
 
 ```
