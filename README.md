@@ -26,7 +26,11 @@ The module is built upon and modifies streetview module - https://github.com/rob
 
 1. Install required modules: `pip install -r requirements.txt`
 2. Change csv_points to the name of the csv you saved from prereqs in `config.yaml`.
-3. Run pipeline.py
+3. Run pipeline.py.
+
+```
+python pipeline.py
+```
 
 # Files
 
@@ -39,3 +43,11 @@ The module is built upon and modifies streetview module - https://github.com/rob
 <img width="100%" alt="Drag the layout file to OBS" src="https://i.imgur.com/MDsnjX3.jpg">
 
 3. `3_project_panoramas.py` will project the panoramas into cubical projections with front, back, left and right views as separate images in a `cube_pano/` directory.
+
+4. `pipeline.py` will run the above 3 scripts in order.
+
+5. `filter_panoids_by_date.py` is a helper script to filter panoids with available year (required) + month (optional) and throws out data without any date attached to them.
+
+```
+python filter_panoids_by_date.py --in panoids.json --out panoids_with_dates.json
+```

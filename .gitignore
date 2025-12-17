@@ -7,3 +7,4 @@ tiles/
 cube_pano/
 get-pip.py
 *.csv
+sort_projected_panos.py
