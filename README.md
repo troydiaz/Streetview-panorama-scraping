@@ -8,19 +8,19 @@ The module is built upon and modifies streetview module - https://github.com/rob
 
 # Prereqs
 
-1. In ArcGIS Pro, open RoadCenterlines in map.
-2. Run Generate Points Along Lines.
-Input: RoadCenterlines
-Point Placement: By Distance
-Distance Method: Geodesic
-3. Run Calculate Geometry Attributes.
-Input: Output from step 2
-New attribute fields
-Longitude - Point x-coordinate
-Latitude - Point y-coordinate
-Coordinate system - Current Map
-4. Export as csv.
-5. Drop the saved csv into streetview-panorama-scraping directory.
+1. In ArcGIS Pro, open **RoadCenterlines** in the map.
+2. Run **Generate Points Along Lines**.
+   - **Input:** RoadCenterlines  
+   - **Point Placement:** By Distance  
+   - **Distance Method:** Geodesic
+3. Run **Calculate Geometry Attributes**.
+   - **Input:** Output from step 2  
+   - **New attribute fields:**
+     - Longitude — Point x-coordinate
+     - Latitude — Point y-coordinate
+   - **Coordinate system:** Current Map
+4. Export the result as a **CSV**.
+5. Drop the saved CSV into the `streetview-panorama-scraping` directory.
 
 # Usage
 
