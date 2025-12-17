@@ -38,16 +38,21 @@ python pipeline.py
 
 <img width="100%" alt="Drag the layout file to OBS" src="https://i.imgur.com/DzjSq7a.png">
 
-2. `2_download_panoramas.py` will start downloading panoramas to a `panoramas/` directory
+2. `2_download_panoramas.py` will start downloading panoramas to a `panoramas/` directory. Optionally, choose to delete panorama JPGs after projecting, skip entries wthout year, or resume by skipping panoids that already have projected faces (when using --project --delete-pano)
 
 <img width="100%" alt="Drag the layout file to OBS" src="https://i.imgur.com/MDsnjX3.jpg">
 
-3. `3_project_panoramas.py` will project the panoramas into cubical projections with front, back, left and right views as separate images in a `cube_pano/` directory.
+3. `3_project_panoramas.py` will project the panoramas into cubical projections with front, back, left and right views as separate images in a `cube_pano/` directory. Optionally, choose to delete panorama JPGs after projection. Uses panoids_with_dates.json to get year/month by panoid.
 
-4. `pipeline.py` will run the above 3 scripts in order.
+4. `pipeline.py` will run the above scripts in order.
 
 5. `filter_panoids_by_date.py` is a helper script to filter panoids with available year (required) + month (optional) and throws out data without any date attached to them.
 
+6. `prune_panoramas.py` is a helper script to delete panoramas/*.jpg that are not in panoids_with_dates.json (useful if you already downloaded from the uncleaned list)
+
+# Commands
+
+1. Dry run. Downloads panoid info → filters year → downloads → projects → deletes panos
 ```
-python filter_panoids_by_date.py --in panoids.json --out panoids_with_dates.json
+python 1_get_panoid_info.py; $raw=(Get-ChildItem -Filter 'panoids_*.json' | Sort-Object LastWriteTime -Descending | Select-Object -First 1).Name; python filter_panoids_by_date.py --in $raw --out panoids_with_dates.json; python 2_download_panoramas.py --panoids panoids_with_dates.json --require-year --project --delete-pano
 ```
