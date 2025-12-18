@@ -42,6 +42,33 @@ python -m venv venv
 python 1_get_panoid_info.py; $raw=(Get-ChildItem -Filter 'panoids_*.json' | Sort-Object LastWriteTime -Descending | Select-Object -First 1).Name; python filter_panoids_by_date.py --in $raw --out panoids_with_dates.json; python 2_download_panoramas.py --panoids panoids_with_dates.json --require-year --project --delete-pano
 ```
 
+# Commands For Debugging (Run Each Step Separately)
+
+1. query street view panoids
+```
+python 1_get_panoid_info.py
+```
+
+2. grad raw panoid jsons
+```
+$raw = (Get-ChildItem -Filter "panoids_*.json" | Sort-Object LastWriteTime -Descending | Select-Object -First 1).Name
+```
+
+3. filter raw panoids (keep only ones with dates)
+```
+python filter_panoids_by_date.py --in $raw --out panoids_with_dates.json
+```
+
+4. download panorama jpgs
+```
+python 2_download_panoramas.py --panoids panoids_with_dates.json --require-year
+```
+   
+5. convert panoramas to cube faces (and delete pano jpgs after projecting)
+```
+python 3_project_panoramas.py --panoids panoids_with_dates.json --delete
+```
+
 # Files
 
 1. `1_get_panoid_info.py` will save data for panoramas and generate a map of panorama locations.
