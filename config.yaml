@@ -2,6 +2,8 @@
 
 csv_points: RoadCenterlines_GeneratePointsAlongLines_20ft_TableToExcel.csv
 search_radius_m: 6
+print_every: 50
+
 
 # Center of area to search for panoramas
 center: [50.7734, 14.2080]
