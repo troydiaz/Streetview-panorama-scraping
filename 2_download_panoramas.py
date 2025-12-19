@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 from __future__ import annotations
 
 import argparse
@@ -11,6 +11,9 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import aiohttp
 import streetview
+
+def safe_text(s: str) -> str:
+    return s.encode("ascii", "backslashreplace").decode("ascii")
 
 
 def load_panoids(path: Path) -> List[Dict[str, Any]]:
@@ -38,18 +41,56 @@ def ensure_dirs(*dirs: str) -> None:
 
 
 async def download_tiles_async(tiles, directory: str, session: aiohttp.ClientSession) -> None:
-    """Downloads all tiles for a panorama into `directory`."""
+    """Downloads all tiles for a panorama into `directory`, with retries + validation."""
+    timeout = aiohttp.ClientTimeout(total=30)
+
     for (x, y, fname, url) in tiles:
         url = url.replace("http://", "https://")
-        while True:
+        out_path = os.path.join(directory, fname)
+
+        delay = 0.5
+        for attempt in range(8):
             try:
-                async with session.get(url) as response:
-                    content = await response.read()
-                with open(os.path.join(directory, fname), "wb") as out_file:
-                    out_file.write(content)
-                break
-            except Exception:
-                print(traceback.format_exc())
+                async with session.get(url, timeout=timeout) as resp:
+                    status = resp.status
+                    ctype = resp.headers.get("Content-Type", "")
+                    content = await resp.read()
+
+                if status != 200:
+                    text = (await resp.text(errors="replace")).replace("\n", " ")
+                    raise RuntimeError(safe_text(f"HTTP {status} ({ctype}) for tile {fname} | {text[:500]}"))
+
+
+                # Tiles should be JPEG (reject HTML/JSON bodies)
+                if not content.startswith(b"\xff\xd8"):
+                    raise RuntimeError(f"Non-JPEG tile {fname} ({ctype}), head={content[:32]!r}")
+
+                with open(out_path, "wb") as f:
+                    f.write(content)
+                break  # success
+
+            except Exception as e:
+                # remove partial/bad file
+                try:
+                    if os.path.exists(out_path):
+                        os.remove(out_path)
+                except Exception:
+                    pass
+
+                msg = str(e)
+
+                # FAIL FAST on permanent 4xx (except 429 which can recover)
+                if isinstance(e, RuntimeError) and msg.startswith("HTTP "):
+                    if msg.startswith("HTTP 400") or msg.startswith("HTTP 403") or msg.startswith("HTTP 404"):
+                        raise
+
+                if attempt == 7:
+                    raise
+
+                await asyncio.sleep(delay)
+                delay = min(delay * 2, 8.0)
+
+
 
 
 def load_projection_settings(config_path: Path) -> Tuple[int, Dict[str, bool]]:
@@ -186,7 +227,7 @@ async def download_one(
                     pass
 
     except Exception:
-        print(f"Failed for panoid={panoid.get('panoid')}\n{traceback.format_exc()}")
+        print(safe_text(f"Failed for panoid={panoid.get('panoid')}\n{traceback.format_exc()}"))
 
 
 async def run_batches(
@@ -207,7 +248,7 @@ async def run_batches(
         panoids = panoids[:max_items]
 
     conn = aiohttp.TCPConnector(limit=conn_limit)
-    async with aiohttp.ClientSession(connector=conn, auto_decompress=False) as session:
+    async with aiohttp.ClientSession(connector=conn) as session:
         for start in range(0, len(panoids), batch_size):
             chunk = panoids[start : start + batch_size]
             await asyncio.gather(
@@ -226,7 +267,8 @@ async def run_batches(
                     for p in chunk
                 ]
             )
-            print(f"Completed batch {start+1} → {min(start+batch_size, len(panoids))} / {len(panoids)}")
+            print(f"Completed batch {start+1} -> {min(start+batch_size, len(panoids))} / {len(panoids)}")
+
 
 
 def main() -> None:
@@ -304,3 +346,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+

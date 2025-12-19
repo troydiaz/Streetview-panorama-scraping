@@ -12,5 +12,7 @@ filter_panoids_year.py
 json_to_csv.py
 YOLOE/
 pothole_vis/pothole_hits.csv
-pothole_vis/
+pothole_vis
 pothole_hits.csv
+*.json
+*.log
