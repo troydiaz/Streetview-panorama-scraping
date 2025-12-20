@@ -13,6 +13,10 @@ YOLOE/runs
 .venv/
 venv/
 YOLOE/.venv/
-YOLOE/.venv_yoloe/
+YOLOE/venv_yoloe/
 __pycache__/
 *.pyc
+YOLOE/yoloe-11l-seg.pt
+YOLOE/yoloe-11m-seg.pt
+YOLOE/yoloe-11s-seg.pt
+YOLOE/mobileclip_blt.ts
