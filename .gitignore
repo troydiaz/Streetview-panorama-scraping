@@ -9,7 +9,6 @@ cube_pano/
 json_to_csv.py
 *.json
 *.log
-YOLOE/runs
 .venv/
 venv/
 YOLOE/.venv/
@@ -20,3 +19,15 @@ YOLOE/yoloe-11l-seg.pt
 YOLOE/yoloe-11m-seg.pt
 YOLOE/yoloe-11s-seg.pt
 YOLOE/mobileclip_blt.ts
+YOLOE/runs/yoloe_barrier_vis
+YOLOE/runs/yoloe_guardrail_vis
+YOLOE/runs/yoloe_manhole_vis
+YOLOE/runs/yoloe_sign_pole_vis
+YOLOE/runs/yoloe_speed_limit_sign_vis
+YOLOE/runs/yoloe_stop_sign_vis
+YOLOE/runs/yoloe_storm_drain_vis
+YOLOE/runs/yoloe_street_light_vis
+YOLOE/runs/yoloe_traffic_cone_vis
+YOLOE/runs/yoloe_utility_pole_vis
+YOLOE/runs/yoloe_traffic_light_vis
+YOLOE/runs/yoloe_fire_hydrant_vis

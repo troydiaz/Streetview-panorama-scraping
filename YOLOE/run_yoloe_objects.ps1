@@ -11,7 +11,7 @@ $script = ".\segmentation.py"
 
 $root = "C:\Users\tdiaz\Desktop\Streetview-panorama-scraping\cube_pano\2025"
 
-$conf = 0.30
+$conf = 0.45
 $iou  = 0.60
 $imgsz = 1024
 $batch = 16
@@ -23,17 +23,7 @@ New-Item -ItemType Directory -Force -Path "runs" | Out-Null
 # One-by-one object prompts
 # "storm drain / catch basin" -> run as two separate objects
 $objects = @(
-  "fire hydrant",
-  "stop sign",
-  "speed limit sign",
-  "traffic light",
-  "traffic cone",
-  "barrier",
-  "street light",
-  "utility pole",
-  "sign pole",
-  "guardrail",
-  "storm drain"
+  "utility pole"
 )
 
 foreach ($obj in $objects) {
